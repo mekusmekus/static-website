@@ -1,10 +1,10 @@
 resource "aws_route53_zone" "route53" {
-  name = "peters.com"
+  name = "dprodev.com"
 }
 
 resource "aws_route53_record" "route53" {
   zone_id = aws_route53_zone.route53.zone_id
-  name    = "peters.com"
+  name    = "dprodev.com"
   type    = "A"
 
   alias {

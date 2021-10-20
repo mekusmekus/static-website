@@ -17,7 +17,7 @@ resource "aws_autoscaling_group" "auto-scaling-grp" {
   health_check_type         = "EC2"
   force_delete              = true
   launch_configuration      = aws_launch_configuration.custom-launch-config.name
-  vpc_zone_identifier       = [aws_subnet.private-subnet-1.id, aws_subnet.private-subnet-2.id]
+  vpc_zone_identifier       = [aws_subnet.public-subnet-1.id, aws_subnet.public-subnet-2.id]
 
   tag {
     key                 = "Name"

@@ -11,29 +11,29 @@ data "aws_ami" "amazon-linux-2" {
 
 
 # Configure the EC2 instance in a public subnet
-#resource "aws_instance" "ec2-private-1" {
-  #ami                         = data.aws_ami.amazon-linux-2.id
-  #associate_public_ip_address = false
-  #instance_type               = "t2.micro"
-  #subnet_id                   = aws_subnet.private-subnet-1.id
+resource "aws_instance" "ec2-private-1" {
+  ami                         = data.aws_ami.amazon-linux-2.id
+  associate_public_ip_address = false
+  instance_type               = "t2.micro"
+  subnet_id                   = aws_subnet.private-subnet-1.id
 
-  #tags = {
-    #"Name" = "private-instance-1}"
-  #}
-#}
+  tags = {
+    "Name" = "private-instance-1}"
+  }
+}
 
 # Configure the EC2 instance in a public subnet
-#resource "aws_instance" "ec2_private-2" {
-  #ami                         = data.aws_ami.amazon-linux-2.id
-  #associate_public_ip_address = false
-  #instance_type               = "t2.micro"
-  #subnet_id                   = aws_subnet.private-subnet-2.id
+resource "aws_instance" "ec2_private-2" {
+  ami                         = data.aws_ami.amazon-linux-2.id
+  associate_public_ip_address = false
+  instance_type               = "t2.micro"
+  subnet_id                   = aws_subnet.private-subnet-2.id
 
- # tags = {
-   # "Name" = "private-instance-2}"
-  #}
-#}
-#
+  tags = {
+    "Name" = "private-instance-2}"
+  }
+}
+
 resource "aws_key_pair" "mykey" {
 
     key_name = "mykeypair"
@@ -47,15 +47,15 @@ resource "aws_instance" "ec2_public" {
   associate_public_ip_address = true
   instance_type               = "t2.micro"
   subnet_id                   = aws_subnet.public-subnet-1.id
-  vpc_security_group_ids      = [aws_security_group.public-sub-sg.id,aws_security_group.http-access.id]
-
+  vpc_security_group_ids      = [aws_security_group.public-sub-sg.id, aws_security_group.http-access.id]
+  key_name = aws_key_pair.mykey.key_name
   user_data = <<EOF
     #! /bin/bash
                 sudo yum update -y
     sudo yum install -y httpd.x86_64
     sudo service httpd start
     sudo service httpd enable
-    echo "<h1>Deployed via Terraform/h1>" | sudo tee /var/www/html/index.html
+    echo "<h1>My first static website hosting" | sudo tee /var/www/html/index.html
   EOF
 
   tags = {

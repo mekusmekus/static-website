@@ -131,8 +131,94 @@ resource "aws_security_group" "database-security-group" {
   }
 }
 
+// SG to onlly allow SSH connections from VPC public subnets
+resource "aws_security_group" "private-sub-sg" {
+  name        = "private subnet security group"
+  description = "Allow SSH inbound traffic"
+  vpc_id      = aws_vpc.vpc.id
+
+  ingress {
+    description = "SSH only from internal VPC clients"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "private subnet security group"
+  }
+}
+
+// SG to allow SSH connections from anywhere
+resource "aws_security_group" "public-sub-sg" {
+  name        = "public subnet security group"
+  description = "Allow SSH inbound traffic"
+  vpc_id      = aws_vpc.vpc.id
+
+  ingress {
+    description = "SSH from the internet"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "public subnet security group"
+  }
+}
+
+resource "aws_security_group" "http-access" {
+  name        = "http-sec-group"
+  description = "Enable HTTP/HTTPS access on Port 80/443"
+  vpc_id      = aws_vpc.vpc.id
+
+
+  ingress {
+    description      = "HTTP Access"
+    from_port        = 80
+    to_port          = 80
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description      = "HTTPS Access"
+    from_port        = 443
+    to_port          = 443
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
+  tags   = {
+    Name = "HTTP/HTTPS Security Group"
+  }
+}
 
 
 
-  
+
+
 
